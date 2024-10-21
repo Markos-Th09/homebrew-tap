@@ -21,10 +21,6 @@ cask "filezilla-client" do
   depends_on macos: ">= :high_sierra"
 
   app "FileZilla.app"
-  binary "#{appdir}/FileZilla.app/Contents/MacOS/fzputtygen"
-  binary "#{appdir}/FileZilla.app/Contents/MacOS/fzsftp"
-  binary "#{appdir}/FileZilla.app/Contents/MacOS/fzstorj"
-  binary "#{appdir}/FileZilla.app/Contents/MacOS/filezilla"
 
   zap trash: [
     "~/Library/Preferences/org.filezilla-project.filezilla.plist",
