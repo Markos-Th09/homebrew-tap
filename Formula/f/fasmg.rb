@@ -38,16 +38,28 @@ class Fasmg < Formula
 
   test do
     ENV["INCLUDE"] = pkgshare/"examples/x86/include"
-    format = OS.mac? ? "MachO64" : "ELF64 executable"
+    format = OS.mac? ? "MachO64" : "ELF64"
     entry = OS.mac? ? "_main" : "_start"
-    modifier = OS.mac? ? "public" : "entry"
     strings_section = OS.mac? ? "section '__cstring' align 1" : "segment readable"
     text_section = OS.mac? ? "section '__text' align 16" : "segment readable executable"
+    prelude = if OS.mac?
+      # On modern macOS, all executable must be dynamically linked.
+      # Populate an entry in the dynamic symbol table for dyld to work properly.
+      <<~EOF
+        import libc.printf, '_printf'
+        interpreter '/usr/lib/dyld'
+        uses '/usr/lib/libSystem.B.dylib'
+      EOF
+    else
+      ""
+    end
 
     (testpath/"hello.asm").write <<~EOS
       include 'format/format.inc'
-      format #{format}
-      #{modifier} #{entry}
+      format #{format} executable
+      entry #{entry}
+
+      #{prelude}
 
       SYS_write = #{OS.mac? ? "0x2000004" : "1"}
       SYS_exit = #{OS.mac? ? "0x2000001" : "60"}
@@ -70,13 +82,7 @@ class Fasmg < Formula
         ret
     EOS
 
-    if OS.mac?
-      system bin/"fasmg", "hello.asm", "hello.o"
-      system ENV.cc, "hello.o", "-o", "hello"
-    elsif OS.linux?
-      system bin/"fasmg", "hello.asm", "hello"
-    end
-
+    system bin/"fasmg", "hello.asm", "hello"
     chmod "+x", "hello"
     assert_equal "Hello, world!\n", shell_output("./hello")
   end
