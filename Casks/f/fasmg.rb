@@ -1,6 +1,6 @@
 cask "fasmg" do
-  version "ktge"
-  sha256 "a60a5484f01b6cc86c046addd0cedc6f8d19a5df2f3e66c55fdf9ecad6ff9423"
+  version "l8vn"
+  sha256 "1587b5296cbb85b4ef94c44f78ab84d138379c460b53e19ff767fcde38eb4bb1"
 
   url "https://flatassembler.net/fasmg.#{version}.zip"
   name "fasmg"

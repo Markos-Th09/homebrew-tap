@@ -18,7 +18,7 @@ cask "filezilla-client" do
     strategy :extract_plist
   end
 
-  depends_on macos: ">= :high_sierra"
+  depends_on :macos
 
   app "FileZilla.app"
 
